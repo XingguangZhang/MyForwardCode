@@ -8,6 +8,7 @@ Created on Tue Jan  1 20:37:56 2019
 import wx
 import wx.xrc
 import cv2
+
 ###########################################################################
 ## Class MyFrame
 ## You need python3 and wxPython, opencv-python module
@@ -56,12 +57,14 @@ class MyFrame ( wx.Frame ):
 		
 		bSizer4 = wx.BoxSizer( wx.HORIZONTAL )
 		
-		self.m_bitmap = wx.StaticBitmap( sbSizer3.GetStaticBox(), wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.Size( 640,480 ), 0 )
+		self.m_bitmap = wx.StaticBitmap( sbSizer3.GetStaticBox(), wx.ID_ANY, wx.NullBitmap, \
+                                  wx.DefaultPosition, wx.Size( 640,480 ), 0 )
 		bSizer4.Add( self.m_bitmap, 0, wx.ALL, 5 )
 		
 		bSizer5 = wx.BoxSizer( wx.VERTICAL )
 		
-		self.m_staticText = wx.StaticText( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Choose Surgeme", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText = wx.StaticText( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Choose Surgeme",\
+                                    wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText.Wrap( -1 )
 		bSizer5.Add( self.m_staticText, 0, wx.ALL, 5 )
 		
@@ -73,26 +76,31 @@ class MyFrame ( wx.Frame ):
 		
 		bSizer5.Add( self.m_listBox, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		self.m_staticText2 = wx.StaticText( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Success or Fail", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText2 = wx.StaticText( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Success or Fail", \
+                                     wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText2.Wrap( -1 )
 		bSizer5.Add( self.m_staticText2, 0, wx.ALL, 5 )
 		
 		m_choiceChoices = self.s_f
-		self.m_choice = wx.Choice( sbSizer3.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, m_choiceChoices, 0 )
+		self.m_choice = wx.Choice( sbSizer3.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, \
+                            wx.DefaultSize, m_choiceChoices, 0 )
 		self.m_choice.SetSelection( 0 )
 		bSizer5.Add( self.m_choice, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.ALL, 5 )
 		
-		self.m_staticText3 = wx.StaticText( sbSizer3.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText3 = wx.StaticText( sbSizer3.GetStaticBox(), wx.ID_ANY, wx.EmptyString, \
+                                     wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText3.Wrap( -1 )
 		bSizer5.Add( self.m_staticText3, 0, wx.ALL, 5 )
 		
-		self.m_Write = wx.Button( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Write To File", wx.Point( -1,-1 ), wx.Size( 140,35 ), 0 )
+		self.m_Write = wx.Button( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Write To File", \
+                           wx.Point( -1,-1 ), wx.Size( 140,35 ), 0 )
 		self.m_Write.SetMinSize( wx.Size( 130,35 ) )
 		self.m_Write.SetMaxSize( wx.Size( 160,40 ) )
 		
 		bSizer5.Add( self.m_Write, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		self.m_delete = wx.Button( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Delete Last Record", wx.DefaultPosition, wx.Size( 140,35 ), 0 )
+		self.m_delete = wx.Button( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Delete Last Record", \
+                            wx.DefaultPosition, wx.Size( 140,35 ), 0 )
 		self.m_delete.SetMinSize( wx.Size( 130,35 ) )
 		self.m_delete.SetMaxSize( wx.Size( 160,40 ) )
 		
@@ -219,29 +227,26 @@ class MyFrame ( wx.Frame ):
 	def SurgemeWrite( self, event ):
 		if self.PROCESSING_FLAG:
 		    print(self.PROCESSING_FLAG)
+		    if len(self.OneRow) == 2 and self.IndexSurgeme:
+		        self.OneRow.append('S' + str(self.IndexSurgeme))
+		        sfAnno = 'F' if self.IndexSF else 'S'
+		        self.OneRow.append(sfAnno)  
+		        print(self.OneRow)                       
 		else:
 		    print('Please load the video!')
 		event.Skip()
         
 	def SurgemeChosed( self, event ):
-		self.IndexSurgeme = self.m_listBox.GetSelections()
-		if len(self.IndexSurgeme) == 1:
-		    IndexSurgeme = str(int(self.IndexSurgeme[0]) + 1)
-		    if len(self.OneRow) == 2:
-		        self.OneRow.append(IndexSurgeme)
+		IndexSurgeme = self.m_listBox.GetSelections()
+		if len(IndexSurgeme) == 1:
+		    self.IndexSurgeme = int(IndexSurgeme[0]) + 1
 		else:
-		    print('Please only choose one surgeme!')
-		print(IndexSurgeme)
+		    print('Please choose single surgeme!')
+		print(self.IndexSurgeme)
 		event.Skip()
 	
 	def s_fChosed( self, event ):
 		self.IndexSF = self.m_choice.GetSelection()
-		if self.IndexSF == 0 and len(self.OneRow) == 3:
-		    self.OneRow.append('S')
-		    print('S')
-		elif self.IndexSF == 1 and len(self.OneRow) == 3:
-		    self.OneRow.append('F')
-		    print('F')
 		event.Skip()
         
 	def RecordDelete( self, event ):
