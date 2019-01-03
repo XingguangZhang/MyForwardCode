@@ -13,12 +13,13 @@ import cv2
 ## Class MyFrame
 ## You need python3 and wxPython, opencv-python module
 ## wxPython module: pip install wxPython
+## Before closing the window, you'd better pause the video.
 ###########################################################################
 
 class MyFrame ( wx.Frame ):
 	def __init__( self, parent, video_path ):
 		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, \
-                     size = wx.Size( 1047,662 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+                     size = wx.Size( 1050,665 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )   
         
         #Define choice lists and initial parameters
@@ -30,6 +31,7 @@ class MyFrame ( wx.Frame ):
 		self.OneRow = []
 		self.IndexSurgeme = 0
 		self.IndexSF = 0     
+		self.OneAnnotation = ''
         
         #Define the framework
 		bSizer1 = wx.BoxSizer( wx.VERTICAL )
@@ -39,16 +41,12 @@ class MyFrame ( wx.Frame ):
 		self.m_load = wx.Button( self, wx.ID_ANY, u"Load", wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer2.Add( self.m_load, 1, wx.ALL, 5 )
 		
-		self.Inform_bar = wx.StaticText( self, wx.ID_ANY, u"Information is shown here", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.Inform_bar = wx.StaticText( self, wx.ID_ANY, u"Information is shown here :", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.Inform_bar.Wrap( -1 )
 		self.Inform_bar.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNTEXT ) )
 		self.Inform_bar.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_3DLIGHT ) )
 		
-		bSizer2.Add( self.Inform_bar, 2, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
-		
-		self.m_toggleBtn2 = wx.ToggleButton( self, wx.ID_ANY, u"Choose Start Frame", wx.Point( -1,-1 ), wx.Size( 200,-1 ), 0 )
-		self.m_toggleBtn2.SetValue( True ) 
-		bSizer2.Add( self.m_toggleBtn2, 1, wx.ALIGN_CENTER|wx.ALL, 5 )
+		bSizer2.Add( self.Inform_bar, 3, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 		
 		
 		bSizer1.Add( bSizer2, 1, wx.EXPAND, 5 )
@@ -57,51 +55,60 @@ class MyFrame ( wx.Frame ):
 		
 		bSizer4 = wx.BoxSizer( wx.HORIZONTAL )
 		
-		self.m_bitmap = wx.StaticBitmap( sbSizer3.GetStaticBox(), wx.ID_ANY, wx.NullBitmap, \
-                                  wx.DefaultPosition, wx.Size( 640,480 ), 0 )
+		self.m_bitmap = wx.StaticBitmap( sbSizer3.GetStaticBox(), wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.Size( 640,480 ), 0 )
 		bSizer4.Add( self.m_bitmap, 0, wx.ALL, 5 )
 		
 		bSizer5 = wx.BoxSizer( wx.VERTICAL )
 		
-		self.m_staticText = wx.StaticText( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Choose Surgeme",\
-                                    wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_toggleBtn2 = wx.ToggleButton( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Choose Start Frame",\
+                                      wx.Point( -1,-1 ), wx.Size( 200,30 ), 0 )
+		self.m_toggleBtn2.SetValue( True ) 
+		bSizer5.Add( self.m_toggleBtn2, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+		
+		self.m_staticText = wx.StaticText( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Choose Surgeme :", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText.Wrap( -1 )
 		bSizer5.Add( self.m_staticText, 0, wx.ALL, 5 )
 		
 		m_listBoxChoices = self.surgeme
-		self.m_listBox = wx.ListBox( sbSizer3.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.Size( 120,240 ), \
+		self.m_listBox = wx.ListBox( sbSizer3.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.Size( 120,190 ), \
                               m_listBoxChoices, wx.LB_EXTENDED|wx.LB_HSCROLL|wx.LB_NEEDED_SB|wx.LB_SINGLE )
-		self.m_listBox.SetFont( wx.Font( 16, 70, 90, 90, False, "Candara" ) )
+		self.m_listBox.SetFont( wx.Font( 14, 70, 90, 90, False, "Calibri" ) )
 		self.m_listBox.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
 		
 		bSizer5.Add( self.m_listBox, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		self.m_staticText2 = wx.StaticText( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Success or Fail", \
-                                     wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText2 = wx.StaticText( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Success or Fail :", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText2.Wrap( -1 )
 		bSizer5.Add( self.m_staticText2, 0, wx.ALL, 5 )
 		
 		m_choiceChoices = self.s_f
-		self.m_choice = wx.Choice( sbSizer3.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, \
-                            wx.DefaultSize, m_choiceChoices, 0 )
+		self.m_choice = wx.Choice( sbSizer3.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, m_choiceChoices, 0 )
 		self.m_choice.SetSelection( 0 )
 		bSizer5.Add( self.m_choice, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.ALL, 5 )
 		
-		self.m_staticText3 = wx.StaticText( sbSizer3.GetStaticBox(), wx.ID_ANY, wx.EmptyString, \
-                                     wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText3.Wrap( -1 )
-		bSizer5.Add( self.m_staticText3, 0, wx.ALL, 5 )
+		self.m_Anno = wx.Button( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Create Annotation :", wx.DefaultPosition, wx.Size( -1,30 ), 0 )
+		self.m_Anno.SetMinSize( wx.Size( -1,30 ) )
 		
-		self.m_Write = wx.Button( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Write To File", \
-                           wx.Point( -1,-1 ), wx.Size( 140,35 ), 0 )
-		self.m_Write.SetMinSize( wx.Size( 130,35 ) )
+		bSizer5.Add( self.m_Anno, 0, wx.ALL, 5 )
+		
+		self.m_Annotext = wx.TextCtrl( sbSizer3.GetStaticBox(), wx.ID_ANY, wx.EmptyString, \
+                                wx.DefaultPosition, wx.Size( 180,-1 ), wx.TE_READONLY )
+		self.m_Annotext.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, "Candara" ) )
+		self.m_Annotext.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNSHADOW ) )
+		self.m_Annotext.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_MENU ) )
+		self.m_Annotext.SetMinSize( wx.Size( 180,-1 ) )
+		self.m_Annotext.SetMaxSize( wx.Size( 180,-1 ) )
+		
+		bSizer5.Add( self.m_Annotext, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		
+		self.m_Write = wx.Button( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Write To File", wx.Point( -1,-1 ), wx.Size( 140,30 ), 0 )
+		self.m_Write.SetMinSize( wx.Size( 130,30 ) )
 		self.m_Write.SetMaxSize( wx.Size( 160,40 ) )
 		
 		bSizer5.Add( self.m_Write, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		self.m_delete = wx.Button( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Delete Last Record", \
-                            wx.DefaultPosition, wx.Size( 140,35 ), 0 )
-		self.m_delete.SetMinSize( wx.Size( 130,35 ) )
+		self.m_delete = wx.Button( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Delete Last Record", wx.DefaultPosition, wx.Size( 140,30 ), 0 )
+		self.m_delete.SetMinSize( wx.Size( 130,30 ) )
 		self.m_delete.SetMaxSize( wx.Size( 160,40 ) )
 		
 		bSizer5.Add( self.m_delete, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
@@ -111,12 +118,11 @@ class MyFrame ( wx.Frame ):
 		
 		sbSizer2 = wx.StaticBoxSizer( wx.StaticBox( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Current annotations" ), wx.VERTICAL )
 		
-		self.AnnotationArea = wx.StaticText( sbSizer2.GetStaticBox(), wx.ID_ANY, u" ", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.AnnotationArea.Wrap( -1 )
-		self.AnnotationArea.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, "Cambria" ) )
-		self.AnnotationArea.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNSHADOW ) )
+		self.AnnotationArea = wx.TextCtrl( sbSizer2.GetStaticBox(), wx.ID_ANY, wx.EmptyString, \
+                                    wx.DefaultPosition, wx.DefaultSize, wx.TE_MULTILINE|wx.TE_READONLY )
+		self.AnnotationArea.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, "Calibri" ) )
 		
-		sbSizer2.Add( self.AnnotationArea, 1, wx.ALL|wx.EXPAND, 5 )
+		sbSizer2.Add( self.AnnotationArea, 1, wx.ALL|wx.EXPAND|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
 		
 		bSizer4.Add( sbSizer2, 1, wx.EXPAND, 5 )
@@ -171,6 +177,7 @@ class MyFrame ( wx.Frame ):
 		self.m_toggleBtn2.Bind( wx.EVT_TOGGLEBUTTON, self.ToggleSaveFrame )
 		self.m_listBox.Bind( wx.EVT_LISTBOX, self.SurgemeChosed )
 		self.m_choice.Bind( wx.EVT_CHOICE, self.s_fChosed )
+		self.m_Anno.Bind( wx.EVT_BUTTON, self.CreateAnnotation )
 		self.m_Write.Bind( wx.EVT_BUTTON, self.SurgemeWrite )
 		self.m_delete.Bind( wx.EVT_BUTTON, self.RecordDelete )
 		self.m_slider.Bind( wx.EVT_SCROLL, self.OnSliderScroll )
@@ -229,9 +236,10 @@ class MyFrame ( wx.Frame ):
 		    print(self.PROCESSING_FLAG)
 		    if len(self.OneRow) == 2 and self.IndexSurgeme:
 		        self.OneRow.append('S' + str(self.IndexSurgeme))
-		        sfAnno = 'F' if self.IndexSF else 'S'
-		        self.OneRow.append(sfAnno)  
-		        print(self.OneRow)                       
+		        self.OneRow.append('F' if self.IndexSF else 'S')  
+		        print(self.OneRow)         
+		    else:
+		        print('please choose a surgeme')
 		else:
 		    print('Please load the video!')
 		event.Skip()
@@ -247,6 +255,21 @@ class MyFrame ( wx.Frame ):
 	
 	def s_fChosed( self, event ):
 		self.IndexSF = self.m_choice.GetSelection()
+		event.Skip()
+        
+	def CreateAnnotation( self, event ):
+		if self.PROCESSING_FLAG:
+		    print(self.PROCESSING_FLAG)
+		    if len(self.OneRow) == 2 and self.IndexSurgeme:
+		        self.OneRow.append('S' + str(self.IndexSurgeme))
+		        self.OneRow.append('F' if self.IndexSF else 'S')  
+		        for item in self.OneRow:
+		            self.OneAnnotation += (item + ' ')
+		        self.m_Annotext.SetValue(self.OneAnnotation)
+		    else:
+		        print('please choose a surgeme')
+		else:
+		    print('Please load the video!')
 		event.Skip()
         
 	def RecordDelete( self, event ):
