@@ -10,6 +10,7 @@ import wx.xrc
 import cv2
 ###########################################################################
 ## Class MyFrame
+## You need python3 and wxPython, opencv-python module
 ## wxPython module: pip install wxPython
 ###########################################################################
 
