@@ -10,6 +10,7 @@ import wx.xrc
 import cv2
 ###########################################################################
 ## Class MyFrame
+## wxPython module: pip install wxPython
 ###########################################################################
 
 class MyFrame ( wx.Frame ):
