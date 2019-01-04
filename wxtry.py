@@ -17,21 +17,23 @@ import cv2
 ###########################################################################
 
 class MyFrame ( wx.Frame ):
-	def __init__( self, parent, video_path ):
+	def __init__( self, parent, video_path, write_path ):
 		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, \
                      size = wx.Size( 1050,665 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )   
         
-        #Define choice lists and initial parameters
+        # Define choice lists and initial parameters
 		self.surgeme = ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8']
 		self.s_f = ['Success', 'Fail']
 		self.FrameNumber = 0
 		self.FrameTime = 33
 		self.video_path = video_path
+		self.write_path = write_path
 		self.OneRow = []
 		self.IndexSurgeme = 0
 		self.IndexSF = 0     
 		self.OneAnnotation = ''
+		self.AnnotationList = []
         
         #Define the framework
 		bSizer1 = wx.BoxSizer( wx.VERTICAL )
@@ -233,11 +235,18 @@ class MyFrame ( wx.Frame ):
 	
 	def SurgemeWrite( self, event ):
 		if self.PROCESSING_FLAG:
-		    print(self.PROCESSING_FLAG)
 		    if len(self.OneRow) == 2 and self.IndexSurgeme:
 		        self.OneRow.append('S' + str(self.IndexSurgeme))
 		        self.OneRow.append('F' if self.IndexSF else 'S')  
-		        print(self.OneRow)         
+		        for item in self.OneRow:
+		            self.OneAnnotation += (item + ' ')
+		        self.AnnotationList.append(self.OneAnnotation + '\n')
+		        self.MyFileWriting()
+		        self.AnnotationArea.AppendText(self.AnnotationList[-1])
+		    elif len(self.OneRow) == 4:
+		        self.AnnotationList.append(self.OneAnnotation + '\n')
+		        self.AnnotationArea.AppendText(self.AnnotationList[-1])
+		        self.MyFileWriting()    		        
 		    else:
 		        print('please choose a surgeme')
 		else:
@@ -273,6 +282,12 @@ class MyFrame ( wx.Frame ):
 		event.Skip()
         
 	def RecordDelete( self, event ):
+		if self.AnnotationList:
+		    self.AnnotationList.pop()
+		    self.MyFileWriting()
+		    self.DisplayAnnotation()
+		else:
+		    print('No record can be deleted!')
 		event.Skip()
         
 	def OnSlow( self, event ):
@@ -350,19 +365,32 @@ class MyFrame ( wx.Frame ):
 		        self.MyImshow()
 		else:
 		    event.Skip()
-        
+            
+    # event handle defined, my functions below
 	def MyImshow(self, width = 640, height = 480):
 		image = cv2.cvtColor(self.CurrentFrame, cv2.COLOR_BGR2RGB)
 		pic = wx.Bitmap.FromBuffer(width, height, image) 
 		self.m_bitmap.SetBitmap(pic)
 		self.m_slider.SetValue(int(self.FrameNumber))
         
+	def MyFileWriting(self):
+		f = open(self.write_path, 'w')
+		for annot in self.AnnotationList:
+		    f.write(annot)
+		f.close()
+    
+	def DisplayAnnotation(self):
+		self.AnnotationArea.Clear()
+		for annot in self.AnnotationList:
+		    self.AnnotationArea.AppendText(annot)
+
         
 if __name__ =='__main__':
     video_path = r'D:\S\Project\data\temp.mp4'
-    write_path = r'D:\S\Project\data'
+    fpath = video_path.split('.')
+    write_path = fpath[0] + '_annot.txt'
     app = wx.App()
-    frame = MyFrame(None, video_path)
+    frame = MyFrame(None, video_path, write_path)
     frame.Show()
     app.MainLoop()
     del app
