@@ -14,10 +14,6 @@ import cv2
 ## Framework code generated with wxFormBuilder : http://www.wxformbuilder.org/
 ## You need python3 and wxPython, opencv-python module
 ## wxPython module: pip install wxPython
-##
-## Choose start and end frames of an annotation at first, then choose surgemes and S/F.
-## Press 'create annotation' to check the current annotation, this step is not necessary.
-## Once you have completed a single annotation, press 'Write to File' to save it and display it on the right.
 ## Before closing the window, you'd better pause the video.
 ###########################################################################
 
@@ -55,7 +51,8 @@ class AnnotationTool2 ( wx.Frame ):
 		bSizer2.Add( self.Inform_bar, 3, wx.ALL|wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 5 )
 		
 		
-		bSizer1.Add( bSizer2, 1, wx.EXPAND, 5 )		
+		bSizer1.Add( bSizer2, 1, wx.EXPAND, 5 )
+		
 		sbSizer3 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"PlayVideo" ), wx.VERTICAL )
 		
 		bSizer4 = wx.BoxSizer( wx.HORIZONTAL )
@@ -120,8 +117,11 @@ class AnnotationTool2 ( wx.Frame ):
 		self.m_delete.SetMinSize( wx.Size( 130,30 ) )
 		self.m_delete.SetMaxSize( wx.Size( 160,40 ) )
 		
-		bSizer5.Add( self.m_delete, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )				
-		bSizer4.Add( bSizer5, 1, wx.EXPAND, 5 )		
+		bSizer5.Add( self.m_delete, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		
+		
+		bSizer4.Add( bSizer5, 1, wx.EXPAND, 5 )
+		
 		sbSizer2 = wx.StaticBoxSizer( wx.StaticBox( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Current annotations" ), wx.VERTICAL )
 		
 		self.AnnotationArea = wx.TextCtrl( sbSizer2.GetStaticBox(), wx.ID_ANY, wx.EmptyString,\
@@ -131,8 +131,7 @@ class AnnotationTool2 ( wx.Frame ):
 		sbSizer2.Add( self.AnnotationArea, 1, wx.ALL|wx.EXPAND|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
 		
-		bSizer4.Add( sbSizer2, 1, wx.EXPAND, 5 )
-		
+		bSizer4.Add( sbSizer2, 1, wx.EXPAND, 5 )	
 		
 		sbSizer3.Add( bSizer4, 1, wx.EXPAND, 5 )
 		
@@ -388,6 +387,7 @@ class AnnotationTool2 ( wx.Frame ):
             
     # Event handle defined, my functions below
 	def MyImshow(self, width = 640, height = 480):
+		self.CurrentFrame = cv2.resize(self.CurrentFrame, (width, height), interpolation = cv2.INTER_CUBIC)
 		image = cv2.cvtColor(self.CurrentFrame, cv2.COLOR_BGR2RGB)
 		pic = wx.Bitmap.FromBuffer(width, height, image) 
 		self.m_bitmap.SetBitmap(pic)
@@ -406,7 +406,7 @@ class AnnotationTool2 ( wx.Frame ):
 
         
 if __name__ =='__main__':
-    video_path = r'D:\S\Project\data\temp.mp4'
+    video_path = r'D:\S\Project\data\S1_T1_color.avi'
     fpath = video_path.split('.')
     write_path = fpath[0] + '_annot.txt'
     app = wx.App()
