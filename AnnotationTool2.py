@@ -360,7 +360,7 @@ class AnnotationTool2 ( wx.Frame ):
 	def OnSlow( self, event ):
 		if self.FrameTime <= 200:
 		    self.FrameTime = self.FrameTime * 2
-		    self.m_timer1.Start(self.FrameTime)
+		    if not self.PAUSE_FLAG: self.m_timer1.Start(self.FrameTime)
 		    self.Inform_bar.SetValue('Current fps:' + str(1000/self.FrameTime))
 		else:
 		    self.Inform_bar.SetValue('Minimum fps reached!')
@@ -370,7 +370,7 @@ class AnnotationTool2 ( wx.Frame ):
 	def OnFast( self, event ):
 		if self.FrameTime >= 10:
 		    self.FrameTime = self.FrameTime * 0.5
-		    self.m_timer1.Start(self.FrameTime)
+		    if not self.PAUSE_FLAG: self.m_timer1.Start(self.FrameTime)
 		    self.Inform_bar.SetValue('Current fps:' + str(1000/self.FrameTime))
 		else:
 		    self.Inform_bar.SetValue('Maximum fps reached!')
