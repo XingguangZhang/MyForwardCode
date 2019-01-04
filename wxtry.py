@@ -243,10 +243,14 @@ class MyFrame ( wx.Frame ):
 		        self.AnnotationList.append(self.OneAnnotation + '\n')
 		        self.MyFileWriting()
 		        self.AnnotationArea.AppendText(self.AnnotationList[-1])
+		        self.OneRow = []
+		        self.OneAnnotation = ''
 		    elif len(self.OneRow) == 4:
 		        self.AnnotationList.append(self.OneAnnotation + '\n')
 		        self.AnnotationArea.AppendText(self.AnnotationList[-1])
-		        self.MyFileWriting()    		        
+		        self.MyFileWriting()  
+		        self.OneRow = []
+		        self.OneAnnotation = ''  		        
 		    else:
 		        print('please choose a surgeme')
 		else:
@@ -271,7 +275,7 @@ class MyFrame ( wx.Frame ):
 		    print(self.PROCESSING_FLAG)
 		    if len(self.OneRow) == 2 and self.IndexSurgeme:
 		        self.OneRow.append('S' + str(self.IndexSurgeme))
-		        self.OneRow.append('F' if self.IndexSF else 'S')  
+		        self.OneRow.append('F' if self.IndexSF else 'S')
 		        for item in self.OneRow:
 		            self.OneAnnotation += (item + ' ')
 		        self.m_Annotext.SetValue(self.OneAnnotation)
