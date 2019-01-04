@@ -218,7 +218,7 @@ class MyFrame ( wx.Frame ):
 		self.Inform_bar.SetValue('Video Loaded : ' + self.video_path)
 		event.Skip()
 	
-
+    # Select the start and end frame of a surgeme
 	def ToggleSaveFrame( self, event ):
 		if self.PROCESSING_FLAG:
 		    self.EndFrame = event.GetEventObject().GetValue()
@@ -239,8 +239,10 @@ class MyFrame ( wx.Frame ):
 		    self.Inform_bar.SetValue('Please load the video!')
 		event.Skip()
 	
+    # Write an annotation to both file and display on annotation window
 	def SurgemeWrite( self, event ):
 		if self.PROCESSING_FLAG:
+            # if the complete annotation is not created
 		    if len(self.OneRow) == 2 and self.IndexSurgeme:
 		        self.OneRow.append('S' + str(self.IndexSurgeme))
 		        self.OneRow.append('F' if self.IndexSF else 'S')  
@@ -249,8 +251,10 @@ class MyFrame ( wx.Frame ):
 		        self.AnnotationList.append(self.OneAnnotation + '\n')
 		        self.MyFileWriting()
 		        self.AnnotationArea.AppendText(self.AnnotationList[-1])
+                # initilize the recording buffer
 		        self.OneRow = []
 		        self.OneAnnotation = ''
+            # else if the complete annotation is created by 'create annotation' function
 		    elif len(self.OneRow) == 4:
 		        self.AnnotationList.append(self.OneAnnotation + '\n')
 		        self.AnnotationArea.AppendText(self.AnnotationList[-1])
@@ -263,6 +267,7 @@ class MyFrame ( wx.Frame ):
 		    self.Inform_bar.SetValue('Please load the video!')
 		event.Skip()
         
+    # record what surgeme is chosed
 	def SurgemeChosed( self, event ):
 		IndexSurgeme = self.m_listBox.GetSelections()
 		if len(IndexSurgeme) == 1:
@@ -271,10 +276,12 @@ class MyFrame ( wx.Frame ):
 		    self.Inform_bar.SetValue('Please choose a single surgeme!')
 		event.Skip()
 	
+    # record the s/f mark of the surgeme
 	def s_fChosed( self, event ):
 		self.IndexSF = self.m_choice.GetSelection()
 		event.Skip()
         
+    # create an complete annotation and display it
 	def CreateAnnotation( self, event ):
 		if self.PROCESSING_FLAG:
 		    if len(self.OneRow) == 2 and self.IndexSurgeme:
@@ -288,7 +295,8 @@ class MyFrame ( wx.Frame ):
 		else:
 		    self.Inform_bar.SetValue('Please load the video!')
 		event.Skip()
-        
+    
+    # delete the last annotation record
 	def RecordDelete( self, event ):
 		if self.AnnotationList:
 		    self.AnnotationList.pop()
@@ -297,7 +305,8 @@ class MyFrame ( wx.Frame ):
 		else:
 		    self.Inform_bar.SetValue('No record can be deleted!')
 		event.Skip()
-        
+    
+    # when the slider is used, set new framenumber and display the corresponding image
 	def OnSliderScroll( self, event ):
 		if self.PROCESSING_FLAG:
 		    self.FrameNumber = self.m_slider.GetValue()
@@ -307,7 +316,8 @@ class MyFrame ( wx.Frame ):
 		        self.MyImshow()
 		else:
 		    event.Skip()
-        
+    
+    # display the last frame
 	def LastFrame( self, event ):
 		try:
 		    self.FrameNumber -= 1
@@ -320,6 +330,7 @@ class MyFrame ( wx.Frame ):
 		        self.MyImshow()
 		event.Skip()
 	
+    # toggle the playing and pausing condition of the video
 	def Play_Pause( self, event ):
 		if self.PROCESSING_FLAG:
 		    self.PAUSE_FLAG = event.GetEventObject().GetValue()
@@ -344,7 +355,8 @@ class MyFrame ( wx.Frame ):
 		    if(success) :
 		        self.MyImshow()
 		event.Skip()
-        
+    
+    # slow down the fps to a half
 	def OnSlow( self, event ):
 		if self.FrameTime <= 200:
 		    self.FrameTime = self.FrameTime * 2
@@ -354,6 +366,7 @@ class MyFrame ( wx.Frame ):
 		    self.Inform_bar.SetValue('Minimum fps reached!')
 		event.Skip()	
 	
+    # set the fps doubly
 	def OnFast( self, event ):
 		if self.FrameTime >= 10:
 		    self.FrameTime = self.FrameTime * 0.5
@@ -362,7 +375,8 @@ class MyFrame ( wx.Frame ):
 		else:
 		    self.Inform_bar.SetValue('Maximum fps reached!')
 		event.Skip()
-
+    
+    # execute for every timer value 
 	def OnTime( self, event ):
 		if self.PROCESSING_FLAG:
 		    success, self.CurrentFrame = self.videoCapture.read()
@@ -372,7 +386,7 @@ class MyFrame ( wx.Frame ):
 		else:
 		    event.Skip()
             
-    # event handle defined, my functions below
+    # Event handle defined, my functions below
 	def MyImshow(self, width = 640, height = 480):
 		image = cv2.cvtColor(self.CurrentFrame, cv2.COLOR_BGR2RGB)
 		pic = wx.Bitmap.FromBuffer(width, height, image) 
