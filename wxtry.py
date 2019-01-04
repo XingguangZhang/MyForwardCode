@@ -228,10 +228,13 @@ class MyFrame ( wx.Frame ):
 		        event.GetEventObject().SetLabel("Choose End Frame")
 		        self.Inform_bar.SetValue('Annotation Starts at Frame : ' + FN + '. Please choose the end frame')
 		    elif self.EndFrame and len(self.OneRow) == 1:
-		        FN = str(int(self.FrameNumber))
-		        self.OneRow.append(FN)
-		        event.GetEventObject().SetLabel("Choose Start Frame")
-		        self.Inform_bar.SetValue('Annotation ends at Frame : ' + FN + '. Please choose the surgeme')
+		        if int(self.FrameNumber) != int(self.OneRow[0]):
+		            FN = str(int(self.FrameNumber))
+		            self.OneRow.append(FN)
+		            event.GetEventObject().SetLabel("Choose Start Frame")
+		            self.Inform_bar.SetValue('Annotation ends at Frame : ' + FN + '. Please choose the surgeme')
+		        else:
+		            self.Inform_bar.SetValue('Do not choose the same frame!')                
 		else:
 		    self.Inform_bar.SetValue('Please load the video!')
 		event.Skip()
@@ -295,15 +298,6 @@ class MyFrame ( wx.Frame ):
 		    self.Inform_bar.SetValue('No record can be deleted!')
 		event.Skip()
         
-	def OnSlow( self, event ):
-		if self.FrameTime >= 200:
-		    self.FrameTime = self.FrameTime * 2
-		    self.m_timer1.Start(self.FrameTime)
-		    self.Inform_bar.SetValue('Current fps:' + str(self.FrameTime))
-		else:
-		    self.Inform_bar.SetValue('Minimum fps reached!')
-		event.Skip()
-        
 	def OnSliderScroll( self, event ):
 		if self.PROCESSING_FLAG:
 		    self.FrameNumber = self.m_slider.GetValue()
@@ -350,12 +344,21 @@ class MyFrame ( wx.Frame ):
 		    if(success) :
 		        self.MyImshow()
 		event.Skip()
+        
+	def OnSlow( self, event ):
+		if self.FrameTime <= 200:
+		    self.FrameTime = self.FrameTime * 2
+		    self.m_timer1.Start(self.FrameTime)
+		    self.Inform_bar.SetValue('Current fps:' + str(1000/self.FrameTime))
+		else:
+		    self.Inform_bar.SetValue('Minimum fps reached!')
+		event.Skip()	
 	
 	def OnFast( self, event ):
-		if self.FrameTime <= 10:
+		if self.FrameTime >= 10:
 		    self.FrameTime = self.FrameTime * 0.5
 		    self.m_timer1.Start(self.FrameTime)
-		    self.Inform_bar.SetValue('Current fps:' + str(self.FrameTime))
+		    self.Inform_bar.SetValue('Current fps:' + str(1000/self.FrameTime))
 		else:
 		    self.Inform_bar.SetValue('Maximum fps reached!')
 		event.Skip()
