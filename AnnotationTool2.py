@@ -14,6 +14,10 @@ import cv2
 ## Framework code generated with wxFormBuilder : http://www.wxformbuilder.org/
 ## You need python3 and wxPython, opencv-python module
 ## wxPython module: pip install wxPython
+##
+## Choose start and end frames of an annotation at first, then choose surgemes and S/F.
+## Press 'create annotation' to check the current annotation, this step is not necessary.
+## Once you have completed a single annotation, press 'Write to File' to save it and display it on the right.
 ## Before closing the window, you'd better pause the video.
 ###########################################################################
 
@@ -51,8 +55,7 @@ class AnnotationTool2 ( wx.Frame ):
 		bSizer2.Add( self.Inform_bar, 3, wx.ALL|wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 5 )
 		
 		
-		bSizer1.Add( bSizer2, 1, wx.EXPAND, 5 )
-		
+		bSizer1.Add( bSizer2, 1, wx.EXPAND, 5 )		
 		sbSizer3 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"PlayVideo" ), wx.VERTICAL )
 		
 		bSizer4 = wx.BoxSizer( wx.HORIZONTAL )
@@ -117,11 +120,8 @@ class AnnotationTool2 ( wx.Frame ):
 		self.m_delete.SetMinSize( wx.Size( 130,30 ) )
 		self.m_delete.SetMaxSize( wx.Size( 160,40 ) )
 		
-		bSizer5.Add( self.m_delete, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
-		
-		
-		bSizer4.Add( bSizer5, 1, wx.EXPAND, 5 )
-		
+		bSizer5.Add( self.m_delete, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )				
+		bSizer4.Add( bSizer5, 1, wx.EXPAND, 5 )		
 		sbSizer2 = wx.StaticBoxSizer( wx.StaticBox( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Current annotations" ), wx.VERTICAL )
 		
 		self.AnnotationArea = wx.TextCtrl( sbSizer2.GetStaticBox(), wx.ID_ANY, wx.EmptyString,\
