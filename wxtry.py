@@ -2,7 +2,7 @@
 """
 Created on Tue Jan  1 20:37:56 2019
 
-@author: Xingguang
+@author: Xingguang Zhang
 """
 
 import wx
@@ -43,12 +43,11 @@ class MyFrame ( wx.Frame ):
 		self.m_load = wx.Button( self, wx.ID_ANY, u"Load", wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer2.Add( self.m_load, 1, wx.ALL, 5 )
 		
-		self.Inform_bar = wx.StaticText( self, wx.ID_ANY, u"Information is shown here :", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.Inform_bar.Wrap( -1 )
-		self.Inform_bar.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNTEXT ) )
-		self.Inform_bar.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_3DLIGHT ) )
+		self.Inform_bar = wx.TextCtrl( self, wx.ID_ANY, u"Information is shown here", \
+                                wx.DefaultPosition, wx.DefaultSize, wx.TE_CENTRE|wx.TE_READONLY )
+		self.Inform_bar.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_MENU ) )
 		
-		bSizer2.Add( self.Inform_bar, 3, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+		bSizer2.Add( self.Inform_bar, 3, wx.ALL|wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 5 )
 		
 		
 		bSizer1.Add( bSizer2, 1, wx.EXPAND, 5 )
@@ -57,29 +56,31 @@ class MyFrame ( wx.Frame ):
 		
 		bSizer4 = wx.BoxSizer( wx.HORIZONTAL )
 		
-		self.m_bitmap = wx.StaticBitmap( sbSizer3.GetStaticBox(), wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.Size( 640,480 ), 0 )
+		self.m_bitmap = wx.StaticBitmap( sbSizer3.GetStaticBox(), wx.ID_ANY, wx.NullBitmap, \
+                                  wx.DefaultPosition, wx.Size( 640,480 ), 0 )
 		bSizer4.Add( self.m_bitmap, 0, wx.ALL, 5 )
 		
 		bSizer5 = wx.BoxSizer( wx.VERTICAL )
 		
-		self.m_toggleBtn2 = wx.ToggleButton( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Choose Start Frame",\
-                                      wx.Point( -1,-1 ), wx.Size( 200,30 ), 0 )
-		self.m_toggleBtn2.SetValue( True ) 
+		self.m_toggleBtn2 = wx.ToggleButton( sbSizer3.GetStaticBox(), wx.ID_ANY, \
+                                      u"Choose Start Frame", wx.Point( -1,-1 ), wx.Size( 200,30 ), 0 )
 		bSizer5.Add( self.m_toggleBtn2, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 		
-		self.m_staticText = wx.StaticText( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Choose Surgeme :", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText = wx.StaticText( sbSizer3.GetStaticBox(), wx.ID_ANY, \
+                                    u"Choose Surgeme :", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText.Wrap( -1 )
 		bSizer5.Add( self.m_staticText, 0, wx.ALL, 5 )
 		
 		m_listBoxChoices = self.surgeme
-		self.m_listBox = wx.ListBox( sbSizer3.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.Size( 120,190 ), \
+		self.m_listBox = wx.ListBox( sbSizer3.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.Size( 120,200 ),\
                               m_listBoxChoices, wx.LB_EXTENDED|wx.LB_HSCROLL|wx.LB_NEEDED_SB|wx.LB_SINGLE )
 		self.m_listBox.SetFont( wx.Font( 14, 70, 90, 90, False, "Calibri" ) )
 		self.m_listBox.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
 		
 		bSizer5.Add( self.m_listBox, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		self.m_staticText2 = wx.StaticText( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Success or Fail :", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText2 = wx.StaticText( sbSizer3.GetStaticBox(), wx.ID_ANY, \
+                                     u"Success or Fail :", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText2.Wrap( -1 )
 		bSizer5.Add( self.m_staticText2, 0, wx.ALL, 5 )
 		
@@ -88,15 +89,16 @@ class MyFrame ( wx.Frame ):
 		self.m_choice.SetSelection( 0 )
 		bSizer5.Add( self.m_choice, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.ALL, 5 )
 		
-		self.m_Anno = wx.Button( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Create Annotation :", wx.DefaultPosition, wx.Size( -1,30 ), 0 )
+		self.m_Anno = wx.Button( sbSizer3.GetStaticBox(), wx.ID_ANY, \
+                          u"Create Annotation :", wx.DefaultPosition, wx.Size( -1,30 ), 0 )
 		self.m_Anno.SetMinSize( wx.Size( -1,30 ) )
 		
 		bSizer5.Add( self.m_Anno, 0, wx.ALL, 5 )
 		
 		self.m_Annotext = wx.TextCtrl( sbSizer3.GetStaticBox(), wx.ID_ANY, wx.EmptyString, \
-                                wx.DefaultPosition, wx.Size( 180,-1 ), wx.TE_READONLY )
-		self.m_Annotext.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, "Candara" ) )
-		self.m_Annotext.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNSHADOW ) )
+                                wx.DefaultPosition, wx.Size( 180,-1 ), wx.TE_CENTRE|wx.TE_READONLY )
+		self.m_Annotext.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, "Century" ) )
+		self.m_Annotext.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BACKGROUND ) )
 		self.m_Annotext.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_MENU ) )
 		self.m_Annotext.SetMinSize( wx.Size( 180,-1 ) )
 		self.m_Annotext.SetMaxSize( wx.Size( 180,-1 ) )
@@ -109,7 +111,8 @@ class MyFrame ( wx.Frame ):
 		
 		bSizer5.Add( self.m_Write, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		self.m_delete = wx.Button( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Delete Last Record", wx.DefaultPosition, wx.Size( 140,30 ), 0 )
+		self.m_delete = wx.Button( sbSizer3.GetStaticBox(), wx.ID_ANY, \
+                            u"Delete Last Record", wx.DefaultPosition, wx.Size( 140,30 ), 0 )
 		self.m_delete.SetMinSize( wx.Size( 130,30 ) )
 		self.m_delete.SetMaxSize( wx.Size( 160,40 ) )
 		
@@ -120,7 +123,7 @@ class MyFrame ( wx.Frame ):
 		
 		sbSizer2 = wx.StaticBoxSizer( wx.StaticBox( sbSizer3.GetStaticBox(), wx.ID_ANY, u"Current annotations" ), wx.VERTICAL )
 		
-		self.AnnotationArea = wx.TextCtrl( sbSizer2.GetStaticBox(), wx.ID_ANY, wx.EmptyString, \
+		self.AnnotationArea = wx.TextCtrl( sbSizer2.GetStaticBox(), wx.ID_ANY, wx.EmptyString,\
                                     wx.DefaultPosition, wx.DefaultSize, wx.TE_MULTILINE|wx.TE_READONLY )
 		self.AnnotationArea.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, "Calibri" ) )
 		
@@ -212,25 +215,25 @@ class MyFrame ( wx.Frame ):
 		self.fps = self.videoCapture.get(cv2.CAP_PROP_FPS)
 		self.FrameTime = 1000 / self.fps
 		self.m_timer1.Start(self.FrameTime)
+		self.Inform_bar.SetValue('Video Loaded : ' + self.video_path)
 		event.Skip()
 	
-	def OnStop( self, event ):
-		self.m_timer1.Stop()
-		event.Skip()
 
 	def ToggleSaveFrame( self, event ):
 		if self.PROCESSING_FLAG:
 		    self.EndFrame = event.GetEventObject().GetValue()
 		    if not self.EndFrame and not self.OneRow:
-		        self.OneRow.append(str(int(self.FrameNumber)))
+		        FN = str(int(self.FrameNumber))
+		        self.OneRow.append(FN)
 		        event.GetEventObject().SetLabel("Choose End Frame")
-		        print(self.EndFrame, self.OneRow)
+		        self.Inform_bar.SetValue('Annotation Starts at Frame : ' + FN + '. Please choose the end frame')
 		    elif self.EndFrame and len(self.OneRow) == 1:
-		        self.OneRow.append(str(int(self.FrameNumber)))
+		        FN = str(int(self.FrameNumber))
+		        self.OneRow.append(FN)
 		        event.GetEventObject().SetLabel("Choose Start Frame")
-		        print(self.EndFrame, self.OneRow)
+		        self.Inform_bar.SetValue('Annotation ends at Frame : ' + FN + '. Please choose the surgeme')
 		else:
-		    print('Please load the video!')
+		    self.Inform_bar.SetValue('Please load the video!')
 		event.Skip()
 	
 	def SurgemeWrite( self, event ):
@@ -252,9 +255,9 @@ class MyFrame ( wx.Frame ):
 		        self.OneRow = []
 		        self.OneAnnotation = ''  		        
 		    else:
-		        print('please choose a surgeme')
+		        self.Inform_bar.SetValue('please choose a surgeme')
 		else:
-		    print('Please load the video!')
+		    self.Inform_bar.SetValue('Please load the video!')
 		event.Skip()
         
 	def SurgemeChosed( self, event ):
@@ -262,8 +265,7 @@ class MyFrame ( wx.Frame ):
 		if len(IndexSurgeme) == 1:
 		    self.IndexSurgeme = int(IndexSurgeme[0]) + 1
 		else:
-		    print('Please choose single surgeme!')
-		print(self.IndexSurgeme)
+		    self.Inform_bar.SetValue('Please choose a single surgeme!')
 		event.Skip()
 	
 	def s_fChosed( self, event ):
@@ -272,7 +274,6 @@ class MyFrame ( wx.Frame ):
         
 	def CreateAnnotation( self, event ):
 		if self.PROCESSING_FLAG:
-		    print(self.PROCESSING_FLAG)
 		    if len(self.OneRow) == 2 and self.IndexSurgeme:
 		        self.OneRow.append('S' + str(self.IndexSurgeme))
 		        self.OneRow.append('F' if self.IndexSF else 'S')
@@ -280,9 +281,9 @@ class MyFrame ( wx.Frame ):
 		            self.OneAnnotation += (item + ' ')
 		        self.m_Annotext.SetValue(self.OneAnnotation)
 		    else:
-		        print('please choose a surgeme')
+		        self.Inform_bar.SetValue('please choose a surgeme')
 		else:
-		    print('Please load the video!')
+		    self.Inform_bar.SetValue('Please load the video!')
 		event.Skip()
         
 	def RecordDelete( self, event ):
@@ -291,16 +292,16 @@ class MyFrame ( wx.Frame ):
 		    self.MyFileWriting()
 		    self.DisplayAnnotation()
 		else:
-		    print('No record can be deleted!')
+		    self.Inform_bar.SetValue('No record can be deleted!')
 		event.Skip()
         
 	def OnSlow( self, event ):
 		if self.FrameTime >= 200:
 		    self.FrameTime = self.FrameTime * 2
 		    self.m_timer1.Start(self.FrameTime)
-		    print('Current fps:', self.FrameTime)
+		    self.Inform_bar.SetValue('Current fps:' + str(self.FrameTime))
 		else:
-		    print('Minimum fps reached!')
+		    self.Inform_bar.SetValue('Minimum fps reached!')
 		event.Skip()
         
 	def OnSliderScroll( self, event ):
@@ -316,10 +317,9 @@ class MyFrame ( wx.Frame ):
 	def LastFrame( self, event ):
 		try:
 		    self.FrameNumber -= 1
-		    print(self.FrameNumber)
 		    self.videoCapture.set(cv2.CAP_PROP_POS_FRAMES , self.FrameNumber)
 		except AttributeError:
-		    print('Please load the video!')
+		    self.Inform_bar.SetValue('Please load the video!')
 		else:
 		    success, self.CurrentFrame = self.videoCapture.read()
 		    if(success) :
@@ -336,16 +336,15 @@ class MyFrame ( wx.Frame ):
 		        self.m_timer1.Start(self.FrameTime)
 		        event.GetEventObject().SetLabel("Pause")
 		else:
-		    print('Please load the video!')
+		    self.Inform_bar.SetValue('Please load the video!')
 		event.Skip()
 	
 	def NextFrame( self, event ):
 		try:
 		    self.FrameNumber += 1
-		    print(self.FrameNumber)
 		    self.videoCapture.set(cv2.CAP_PROP_POS_FRAMES , self.FrameNumber)
 		except AttributeError:
-		    print('Please load the video!')
+		    self.Inform_bar.SetValue('Please load the video!')
 		else:
 		    success, self.CurrentFrame = self.videoCapture.read()
 		    if(success) :
@@ -356,9 +355,9 @@ class MyFrame ( wx.Frame ):
 		if self.FrameTime <= 10:
 		    self.FrameTime = self.FrameTime * 0.5
 		    self.m_timer1.Start(self.FrameTime)
-		    print('Current fps:', self.FrameTime)
+		    self.Inform_bar.SetValue('Current fps:' + str(self.FrameTime))
 		else:
-		    print('Maximum fps reached!')
+		    self.Inform_bar.SetValue('Maximum fps reached!')
 		event.Skip()
 
 	def OnTime( self, event ):
