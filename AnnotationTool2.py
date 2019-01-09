@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Jan  1 20:37:56 2019
+
 @author: Xingguang Zhang
 """
 
@@ -14,7 +15,10 @@ import cv2
 ## You need python3 and wxPython, opencv-python module
 ## wxPython module: pip install wxPython
 ## The size of display area can be modified by setting VideoDisplaySize parameter in main function
-## The surgeme list can also be easily modified.
+## The surgeme list can also be easily editted.
+## Left and right arrow on keyboard can be used to show the last and next frame. 
+## Create annotation button is not necessary before 'write to file' action, but if you would like 
+## to edit the annotation, you can create it and then edit in the text area.
 ## Before closing the window, you'd better pause the video.
 ##################################################################################################
 
@@ -100,7 +104,7 @@ class AnnotationTool2 ( wx.Frame ):
 		bSizer5.Add( self.m_Anno, 1, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
 		self.m_Annotext = wx.TextCtrl( sbSizer3.GetStaticBox(), wx.ID_ANY, \
-                                wx.EmptyString, wx.DefaultPosition, wx.Size( 180,-1 ), wx.TE_CENTRE|wx.TE_READONLY )
+                                wx.EmptyString, wx.DefaultPosition, wx.Size( 180,-1 ), wx.TE_CENTRE)
 		self.m_Annotext.SetFont( wx.Font( 14, 70, 90, 90, False, "Century" ) )
 		self.m_Annotext.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BACKGROUND ) )
 		self.m_Annotext.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_MENU ) )
@@ -184,8 +188,13 @@ class AnnotationTool2 ( wx.Frame ):
 		self.m_toggleBtn.Bind( wx.EVT_TOGGLEBUTTON, self.Play_Pause )
 		self.m_buttonNext.Bind( wx.EVT_BUTTON, self.NextFrame )
 		self.m_buttonFast.Bind( wx.EVT_BUTTON, self.OnFast )
-		self.Bind( wx.EVT_TIMER, self.OnTime, id=wx.ID_ANY )
-	
+		self.Bind( wx.EVT_TIMER, self.OnTime, id = wx.ID_ANY )
+        
+		self.m_toggleBtn.Bind( wx.EVT_KEY_DOWN, self.KeyboardEvent )
+		self.m_buttonNext.Bind( wx.EVT_KEY_DOWN, self.KeyboardEvent )
+		self.m_buttonBefore.Bind( wx.EVT_KEY_DOWN, self.KeyboardEvent )
+		self.Bind( wx.EVT_KEY_DOWN, self.KeyboardEvent )	        
+        
         #Set flags
 		self.PAUSE_FLAG = False
 		self.PROCESSING_FLAG = False
@@ -232,13 +241,13 @@ class AnnotationTool2 ( wx.Frame ):
 		    self.Inform_bar.SetValue('Please load the video!')
 		event.Skip()
 	
-    # Write an annotation to file and display the annotations on annotation window
+    # Write an annotation to file and display it on annotation window
 	def SurgemeWrite( self, event ):
 		if self.PROCESSING_FLAG:
             # if the complete annotation is not created
 		    if len(self.OneRow) == 2 and self.IndexSurgeme:
 		        self.OneRow.append('S' + str(self.IndexSurgeme))
-		        self.OneRow.append('F' if self.IndexSF else 'S')  
+		        self.OneRow.append('False' if self.IndexSF else 'True')  
 		        for item in self.OneRow:
 		            self.OneAnnotation += (item + ' ')
 		        self.AnnotationList.append(self.OneAnnotation + '\n')
@@ -247,8 +256,9 @@ class AnnotationTool2 ( wx.Frame ):
                 # initilize the recording buffer
 		        self.OneRow = []
 		        self.OneAnnotation = ''
-            # else if the complete annotation is created by 'create annotation' function
+            # else if the complete annotation was created by 'create annotation' function
 		    elif len(self.OneRow) == 4:
+		        self.OneAnnotation = self.m_Annotext.GetLineText(0)
 		        self.AnnotationList.append(self.OneAnnotation + '\n')
 		        self.AnnotationArea.AppendText(self.AnnotationList[-1])
 		        self.MyFileWriting()  
@@ -379,6 +389,16 @@ class AnnotationTool2 ( wx.Frame ):
 		else:
 		    event.Skip()
             
+	def KeyboardEvent( self, event ):
+		keycode = event.GetKeyCode()
+		if keycode in [wx.WXK_LEFT, wx.WXK_RIGHT] and self.PROCESSING_FLAG:
+		    self.FrameNumber = self.FrameNumber - 1 if keycode == wx.WXK_LEFT else self.FrameNumber + 1
+		    self.videoCapture.set(cv2.CAP_PROP_POS_FRAMES , self.FrameNumber)
+		    success, self.CurrentFrame = self.videoCapture.read()
+		    if(success):
+		        self.MyImshow()
+		event.Skip()
+            
     # Event handle defined, my functions below
 	def MyImshow(self):
 		self.CurrentFrame = cv2.resize(self.CurrentFrame, (self.ImWidth, self.ImHeight), interpolation = cv2.INTER_CUBIC)
@@ -400,8 +420,9 @@ class AnnotationTool2 ( wx.Frame ):
 
         
 if __name__ =='__main__':
+    # The size of display area and the path of video file, the annotation file will be in the same dictionary will the video file
     VideoDisplaySize = [960, 540]
-    video_path = r'D:\S\Project\data\Taurus\data\S1\S1_T1_color.avi'
+    video_path = r'D:\S\Project\data\Taurus\data\S3\S3_T1_color.avi'
     fpath = video_path.split('.')
     write_path = fpath[0] + '_annot.txt'
     app = wx.App()
