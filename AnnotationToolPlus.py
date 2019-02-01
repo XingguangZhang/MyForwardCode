@@ -21,7 +21,9 @@ import cv2
 ## Select an .avi video, for other format, you need to change 
 ##		self.wildcard='Video Files(*.avi)|*.avi|All Files(*.*)|*.*'   
 ##      above two avi to another video format that opencv supports.
-## This code is able to be used to modify the exsit annotation record as well as add new annotayion
+## You are able to use this to modify the exsited annotation record as well as add new annotation
+## Double click the target annotation, then the corresponding video slice will be played.
+## Before modify, insert and delete the annotation, please select the corresponding annotation.
 ## Left and right arrow on keyboard can be used to show the last and next frame. 
 ## Create annotation button is not necessary before 'write to file' action, but if you would like 
 ## to edit the annotation, you can create it and then edit in the text area.
