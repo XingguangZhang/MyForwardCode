@@ -2,7 +2,7 @@
 """
 Created on Tue Feb 12 20:22:41 2019
 
-@author: 10659
+@author: Xingguang Zhang
 """
 
 import imutils
